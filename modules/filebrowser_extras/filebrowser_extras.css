@@ -1,0 +1,3 @@
+.block-content article.node-dir-listing > h2, .block-content article.node-dir-listing > footer, .block-content article.node-dir-listing > .contextual-links-wrapper, small.messages, #filebrowser-form-upload .bue-ui, #filebrowser-form-create-folder .bue-ui, .views-row .node-dir-listing .submitted, #filebrowser_create_folder_wrapper .form-type-textarea, #filebrowser_uploads_wrapper .form-type-textarea { display: none; }
+.filebrowser-folder, .filebrowser-parent { cursor: pointer; }
+.folder-view div.layout { padding: 5px; }

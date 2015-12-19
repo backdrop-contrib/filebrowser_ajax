@@ -1,0 +1,9 @@
+name = Amazon S3 support for Filebrowser
+description = Enable this module to be able to use Amazon S3 storage with your filebrowser node.
+version = 1.x-3.1
+backdrop = 1.x
+type = module
+package = FileBrowser
+project = "filebrowser"
+dependencies[] = filebrowser
+dependencies[] = awssdk2

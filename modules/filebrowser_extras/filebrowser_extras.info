@@ -1,0 +1,7 @@
+name = Filebrowser Ajax Extras
+description = Alterations for the Filebrowser Ajax module
+backdrop = 1.x
+package = FileBrowser
+version = 1.x-1.x
+project = "filebrowser_extras"
+dependencies[] = filebrowser

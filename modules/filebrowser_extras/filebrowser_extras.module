@@ -1,0 +1,93 @@
+<?php
+/**
+ * Alterations for the Filebrowser Ajax module (sidebar).
+ */
+function filebrowser_extras_user_presave($account) {
+  if ($account->is_new == TRUE)
+  {
+  // if new user signed up, create a node for them which represents their file directory structure.
+
+  if (!file_exists('files/' . $account->name)) {
+  mkdir('files/' . $account->name, 0777, true);
+
+  mkdir('files/' . $account->name . "/images", 0777, true);
+  mkdir('files/' . $account->name . "/sounds", 0777, true);
+  mkdir('files/' . $account->name . "/videos", 0777, true);
+  mkdir('files/' . $account->name . "/objects", 0777, true);
+  mkdir('files/' . $account->name . "/shaders", 0777, true);
+  mkdir('files/' . $account->name . "/ghosts", 0777, true);
+  mkdir('files/' . $account->name . "/websurfaces", 0777, true);
+  mkdir('files/' . $account->name . "/scripts", 0777, true);
+  }
+
+  $node           = entity_create('node', array('type' => 'dir_listing'));
+  $node->uid      = $account->uid;
+  $node->title    = $account->name;
+  $node->language = LANGUAGE_NONE;
+  $node->langcode = "und";
+  $node->status = 1;
+  $node->comment = 0;
+  $node->promote = 0;
+  $node->sticky = 0;
+  $node->sticky = 0;
+  $node->path["alias"] = $account->name;
+  $node->body[$node->language][0]['value'] = 'My Files';
+
+  $node->folder_rights->explore_subdirs = 1;
+  $node->folder_rights->download_archive = 0;
+  $node->folder_rights->create_folders = 1;
+  $node->folder_rights->download_manager = "private";
+  $node->folder_rights->force_download = 0;
+  $node->folder_rights->forbidden_files = "descript.ion file.bbs .git CSV .svn .*";
+  $node->folder_rights->filtered_files = "*.png\n*.gif\n*.jpg\n*.jpeg\n*.mp3\n*.wav\n*.ogg\n*.obj\n*.dae\n*.mtl\n*.txt\n*.PNG\n*.GIF\n*.JPG\n*.JPEG\n*.MP3\n*.WAV\n*.OGG\n*.OBJ\n*.DAE\n*.MTL\n*.TXT";
+
+  $node->folder_presentation->default_view = "list-view";
+  $node->folder_presentation->encoding = "UTF-8";
+  $node->folder_presentation->hide_extension = 1;
+  $node->folder_presentation->visible_columns["icon"] = TRUE;
+  $node->folder_presentation->visible_columns["display-name"] = TRUE;
+  $node->folder_presentation->visible_columns["created"] = TRUE;
+  $node->folder_presentation->visible_columns["type"] = TRUE;
+  $node->folder_presentation->visible_columns["description"] = FALSE;
+  $node->folder_presentation->default_sort = "display-name";
+  $node->folder_presentation->default_sort_order = "asc";
+
+  $node->folder_uploads->enabled = 1;
+  $node->folder_uploads->allow_overwrite = 1;
+  $node->folder_uploads->accepted_uploaded_files = "*.png\n*.gif\n*.jpg\n*.jpeg\n*.mp3\n*.wav\n*.ogg\n*.obj\n*.dae\n*.mtl\n*.txt\n*.PNG\n*.GIF\n*.JPG\n*.JPEG\n*.MP3\n*.WAV\n*.OGG\n*.OBJ\n*.DAE\n*.MTL\n*.TXT";
+  $node->folder_path = "files/" . $account->name;
+
+  $node->save();
+  }
+
+}
+
+
+// when viewing a directory structure (for example, on room create screen sidebar)
+function filebrowser_extras_node_view(Node $node, $view_mode, $langcode) {
+
+// if the logged in user is not the author of their own directory or the site admin, they shouldn't see the files!
+global $user;
+if ($node->uid != $user->uid && !in_array(1, array_keys($user->roles)))
+{
+backdrop_goto("/");
+}
+
+// add some helper dom elements for displaying status messages and upload instructions
+if ( ($node->type == "dir_listing") &&  ($view_mode == 'full') ) {
+      $node->content['ajax_messages'] = array(
+        '#markup' => "<small class='messages error'></small><small class='messages status'></small>",
+        '#weight' => 900,
+      );
+
+      $node->content['ajax_instructions'] = array(
+        '#markup' => '<fieldset class="collapsible collapsed form-wrapper collapse-processed" id="filebrowser-instructions"><legend><span class="fieldset-legend"><a class="fieldset-title" href="#"><span class="fieldset-legend-prefix element-invisible">Show</span> Instructions</a><span class="summary"></span></span></legend><div class="fieldset-wrapper"><h4>Allowed file types</h4><small>png gif jpg jpeg mp3 wav ogg obj dae mtl txt</small><h4>File Manager</h4><small>* pressing PROCESS below will take you away from this page, erasing unsaved changes in your current room editor</small><h4>Upload/Create</h4><small>Will update within this page</small></div></fieldset>',
+        '#weight' => 1,
+      );
+// add a setting to get the logged in user name from Javascript settings
+backdrop_add_js(array('filebrowser_extras' => array('username' => $user->name)), 'setting');
+backdrop_add_css(backdrop_get_path('module', 'filebrowser_extras') . '/filebrowser_extras.css', array('preprocess' => FALSE));
+backdrop_add_js(backdrop_get_path('module', 'filebrowser_extras') . '/filebrowser_extras.js', array('type' => 'file', 'scope' => 'footer', 'weight' => 99, 'preprocess' => FALSE));
+  }
+
+}
