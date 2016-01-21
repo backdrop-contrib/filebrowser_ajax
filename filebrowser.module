@@ -578,7 +578,7 @@ function filebrowser_form_upload($form, &$form_state, $node) {
       '#suffix' => '</div>',
       '#weight' => 30
   );
-  
+
   $form['node'] = array(
     '#type' => 'value',
     '#value' => $node,
@@ -611,10 +611,10 @@ function filebrowser_form_upload($form, &$form_state, $node) {
   $form['submitted'] = array(
       '#tree' => TRUE
   );
-  
+
   $form['#prefix'] = '<div id="filebrowser_uploads_wrapper">';
   $form['#suffix'] = '</div>';
-  
+
   $form['filebrowser_uploads']['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Upload'),
@@ -626,7 +626,7 @@ function filebrowser_form_upload($form, &$form_state, $node) {
          'progress' => array('type' => 'throbber', 'message' => 'Uploading...'),
        ),
   );
-  
+
   $form['#redirect'] = NULL;
   return $form;
 }
@@ -637,7 +637,7 @@ function filebrowser_form_upload($form, &$form_state, $node) {
  * filebrowser module comes with black magic functions like _filebrowser_load_files($node); which work great in php form handling
  * however, it calculates the wrong file and folder locations when using AJAX form submit, so we are commenting those out.
  * for good AJAX functionality, we are not using many internal functions like this 12/9/2015 -- biolithic
- * 
+ *
  */
 function filebrowser_form_upload_validate($form, &$form_state) {
   $node = $form_state['values']['node'];
@@ -651,7 +651,7 @@ function filebrowser_form_upload_validate($form, &$form_state) {
   $clean = trim(str_replace($strip, "", strip_tags($target)));
   $target = preg_replace('/\s+/', "-", $clean);
   $form_state['values']['target'] = $target;
-  
+
   if (!$node->folder_uploads->allow_overwrite && file_exists($target)) {
     form_error($form['filebrowser_uploads']["file_$i"], t("This file already exists."));
   }
@@ -664,12 +664,12 @@ function filebrowser_form_upload_validate($form, &$form_state) {
  * uploads submission.
  */
 function filebrowser_form_upload_submit($form, &$form_state) {
-  
+
   $i = 1; // Later we can have multi-upload
   $node = $form_state['values']['node'];
   // $target = _filebrowser_build_new_upload_file_name($node, $form_state, $i);
   $target = $form_state['values']['target'];
-  
+
   // debug ($target, 'just prior to copy()');
   $success = copy($_FILES['files']['tmp_name']["file_$i"], $target);
   if (!$success) {
@@ -678,7 +678,7 @@ function filebrowser_form_upload_submit($form, &$form_state) {
   else {
    //  _filebrowser_load_files($node, NULL, TRUE); // force listing rebuild
     if (!empty($form['filebrowser_uploads']["description_$i"])) {
-      
+
       if (array_key_exists(_filebrowser_safe_basename($target), $node->file_listing))
       {
       $file = $node->file_listing[_filebrowser_safe_basename($target)];
@@ -687,7 +687,7 @@ function filebrowser_form_upload_submit($form, &$form_state) {
       ));
       }
     }
-  
+
    //$new_state = array();
    //$new_state['build_info'] = $form_state['build_info'];
    //$new_state['rebuild'] = TRUE;
@@ -730,10 +730,10 @@ function filebrowser_form_create_folder($form, $form_state, $node) {
   $form['submitted'] = array(
       '#tree' => TRUE
   );
-  
+
   $form['#prefix'] = '<div id="filebrowser_create_folder_wrapper">';
   $form['#suffix'] = '</div>';
-  
+
   // $form['#submit'][] = 'filebrowser_form_create_folder_submit';
   $form['filebrowser_create_folder']['submit'] = array(
        '#type' => 'submit',
@@ -745,7 +745,7 @@ function filebrowser_form_create_folder($form, $form_state, $node) {
          'progress' => array('type' => 'throbber', 'message' => 'Creating...'),
        ),
    );
-  
+
   $form['#redirect'] = NULL;
   return $form;
 }
@@ -756,11 +756,10 @@ function filebrowser_form_create_folder($form, $form_state, $node) {
 function filebrowser_form_create_folder_validate($form, &$form_state) {
   $node = $form_state['values']['node'];
   // _filebrowser_load_files($node);
-  dsm("validating");
   $folderpath = $node->file_listing['.']['full-path'];
   $folderpath = rtrim($folderpath, ".");
   // $target = _filebrowser_encoding_to_fs($node, "{$node->file_listing['.']['full-path']}/{$form_state['values']['folder_name']}");
-  
+
   $foldername = $form_state['values']['folder_name'];
   $strip = array("~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "=", "+", "[", "{", "]",
                    "}", "\\", "|", ";", ":", "\"", "'", "&#8216;", "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;",
@@ -769,7 +768,7 @@ function filebrowser_form_create_folder_validate($form, &$form_state) {
   $foldername = preg_replace('/\s+/', "-", $clean);
   $folderpath .= $foldername;
   $form_state['values']['target'] = $folderpath;
-  
+
   if (file_exists($folderpath)) {
     form_error($form['filebrowser_create_folder']['folder_name'], t("This folder already exists."));
   }
@@ -783,7 +782,7 @@ function filebrowser_form_create_folder_submit($form, & $form_state) {
   $i = 1; // Later we can have multi-upload
   // $node = $form_state['values']['node'];
   // $target = _filebrowser_encoding_to_fs($node, "{$node->file_listing['.']['full-path']}/{$form_state['values']['folder_name']}");
-  
+
   $target = $form_state['values']['target'];
   $success = mkdir($target, 0777);
   // if (!$success) {
@@ -798,7 +797,7 @@ function filebrowser_form_create_folder_submit($form, & $form_state) {
    //    ));
    //  }
   // }
-  
+
    // $new_state = array();
    // $new_state['build_info'] = $form_state['build_info'];
    // $new_state['rebuild'] = TRUE;
@@ -1143,7 +1142,7 @@ function filebrowser_filebrowser_actions_info($node) {
     if (_filebrowser_can_download_archive($node) && function_exists('zip_open')) {
       $actions[] = array(
           'operation' => 'download',
-          'title' => t("Download selected items as an ZIP archive (only files)")
+          'title' => t("Download selected as ZIP")
       );
     }
     if (user_access(FILEBROWSER_DELETE_FILE)) {

@@ -30,9 +30,11 @@ function filebrowser_extras_user_presave($account) {
   $node->promote = 0;
   $node->sticky = 0;
   $node->sticky = 0;
-  $node->path["alias"] = $account->name;
+  $node->path["auto"] = FALSE;
+  $node->path["alias"] = "dir_listing/" . $account->name;
   $node->body[$node->language][0]['value'] = 'My Files';
 
+  $node->folder_rights = new stdClass();
   $node->folder_rights->explore_subdirs = 1;
   $node->folder_rights->download_archive = 0;
   $node->folder_rights->create_folders = 1;
@@ -41,6 +43,7 @@ function filebrowser_extras_user_presave($account) {
   $node->folder_rights->forbidden_files = "descript.ion file.bbs .git CSV .svn .*";
   $node->folder_rights->filtered_files = "*.png\n*.gif\n*.jpg\n*.jpeg\n*.mp3\n*.wav\n*.ogg\n*.obj\n*.dae\n*.mtl\n*.txt\n*.PNG\n*.GIF\n*.JPG\n*.JPEG\n*.MP3\n*.WAV\n*.OGG\n*.OBJ\n*.DAE\n*.MTL\n*.TXT";
 
+  $node->folder_presentation = new stdClass();
   $node->folder_presentation->default_view = "list-view";
   $node->folder_presentation->encoding = "UTF-8";
   $node->folder_presentation->hide_extension = 1;
@@ -52,6 +55,7 @@ function filebrowser_extras_user_presave($account) {
   $node->folder_presentation->default_sort = "display-name";
   $node->folder_presentation->default_sort_order = "asc";
 
+  $node->folder_uploads = new stdClass();
   $node->folder_uploads->enabled = 1;
   $node->folder_uploads->allow_overwrite = 1;
   $node->folder_uploads->accepted_uploaded_files = "*.png\n*.gif\n*.jpg\n*.jpeg\n*.mp3\n*.wav\n*.ogg\n*.obj\n*.dae\n*.mtl\n*.txt\n*.PNG\n*.GIF\n*.JPG\n*.JPEG\n*.MP3\n*.WAV\n*.OGG\n*.OBJ\n*.DAE\n*.MTL\n*.TXT";
@@ -64,11 +68,11 @@ function filebrowser_extras_user_presave($account) {
 
 
 // when viewing a directory structure (for example, on room create screen sidebar)
-function filebrowser_extras_node_view(Node $node, $view_mode, $langcode) {
+function filebrowser_extras_node_view(Node $node, $view_mode) {
 
 // if the logged in user is not the author of their own directory or the site admin, they shouldn't see the files!
 global $user;
-if ($node->uid != $user->uid && !in_array(1, array_keys($user->roles)))
+if ($node->uid != $user->uid && !in_array(1, array_keys($user->roles)) && $node->type == "dir_listing" && $view_mode == 'full' )
 {
 backdrop_goto("/");
 }

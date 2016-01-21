@@ -103,9 +103,9 @@ function _filebrowser_prepare_record(& $node, $load = TRUE) {
   // Fix rights
   $node->folder_rights = (object)$node->folder_rights;
   unset($node->folder_rights->private_downloads);
-  _filebrowser_set_default($node->folder_rights->explore_subdirs, FALSE);
-  _filebrowser_set_default($node->folder_rights->create_folders, FALSE);
-  _filebrowser_set_default($node->folder_rights->download_archive, FALSE);
+  _filebrowser_set_default($node->folder_rights->explore_subdirs, TRUE);
+  _filebrowser_set_default($node->folder_rights->create_folders, TRUE);
+  _filebrowser_set_default($node->folder_rights->download_archive, TRUE);
   _filebrowser_set_default($node->folder_rights->forbidden_files, "descript.ion\nfile.bbs\n.git\nCSV\n.svn\n");
   _filebrowser_set_default($node->folder_rights->filtered_files, "");
   if (!isset($node->folder_rights->download_manager) || !_filebrowser_externals('download_manager_info', $node->folder_rights->download_manager)) {
@@ -702,7 +702,7 @@ function _filebrowser_thumbnails_generate(& $node, & $file) {
   $mime_type = str_replace("/", "-", $file['mime-type']);
   $module_path = backdrop_get_path("module", "filebrowser") . "/icons/";
   $theme_path = backdrop_get_path('theme', $GLOBALS['theme']) . "/filebrowser/";
-  
+
   $icons = array(
     $theme_path . $mime_type . ".png",
     $theme_path . $main_type . ".png",
@@ -731,7 +731,7 @@ function _filebrowser_build_new_upload_file_name($node, $form_state, $i) {
   if (!empty($form_state['values']["file_name_$i"])) {
     $path_info_new = pathinfo($form_state['values']["file_name_$i"]);
     $path_info_old = pathinfo($file_name);
-    
+
     $file_name = $path_info_new['filename'];
     if (isset($path_info_old['extension'])) {
       $file_name .= ".{$path_info_old['extension']}";
