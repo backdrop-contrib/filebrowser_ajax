@@ -23,9 +23,9 @@ TESTED
 -----
 
 This module is working for specific use cases (custom setup).
-Do not use this module together with Filebrowser module.
+Do NOT use this module together with Filebrowser module.
 Todos for this module:
-- insert into CKeditor (plain textbox and Ace Editor are good).
+- insert into CKeditor (plain textbox, Full HTML and Ace Editor work well).
 - better (tested) permissions.
 - good documentation for setting this module up.
 
@@ -79,12 +79,22 @@ To actually use the module for the use case of content editor file-browsing side
 "The content creator uploads files which they can view in their sidebar, which they can click each file icon to insert the path to it into the text editor on the node create/edit screen":
 
 - create a node of the content type "directory listing" (supplied by this module).
+
 - make sure you fill out correctly the field "The system file path to the directory".
+
 - you may want a custom hook to auto-create these for each content creator
+
 - for example, if you were to provide public access to a pdf folder with this, put /files/pdf in the system file path field.
+
 - for example, if you were to provide private access to a personal folder with this, put /files/[username] in the system file path field and use the module's permissions
+
 - Then, users could upload and view pdfs to just that folder (or make directories within that folder)
+
 - make a View with a display of Block
+
+- make a Layout that contains a sidebar (for example, 2 column) with a path such as "node/add" and place the block created in the above step in the sidebar.
+
+- then, when a content creator is creating a node (piece of content), they have a sidebar next to the text editor from which they can click on the file icons (text, pdf, image, etc) to insert that file into their current document.  They can drag and drop a file to the sidebar and press upload to place the file in the list without page refresh.  They can create folders and organize their files within their personal folders without page refresh.  This saves time in referencing files (Word documents, images, etc) in documents for content creators, but is not exactly a "wysiwig photo" solution.
 
 LICENSE
 -------
